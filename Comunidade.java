@@ -2,8 +2,9 @@ package library;
 
 public class Comunidade extends Locatario {
 
-	TempoMaximoDevolucao = 15;
-
+	int TempoMaximoDevolucao = 15;
+	int NumeroLivrosPermitidos = 2;
+	
 	public void setLivrosEmprestados(){
 
 	}
@@ -14,7 +15,7 @@ public class Comunidade extends Locatario {
 	}
 
 	public boolean getPermissaoTexto(){
-		return FALSE;
+		return false;
 	}
 
 	public int getTempoMaxDevolucao(){

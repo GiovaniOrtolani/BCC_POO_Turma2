@@ -1,9 +1,10 @@
 package library;
 
-public class Professor extends Locatario {
+public class Aluno extends Locatario {
 
-	TempoMaximoDevolucao = 15;
-
+	int TempoMaximoDevolucao = 15;
+	int NumeroLivrosPermitidos = 4;
+	
 	public void setLivrosEmprestados(){
 
 	}
@@ -14,7 +15,7 @@ public class Professor extends Locatario {
 	}
 
 	public boolean getPermissaoTexto(){
-		return TRUE;
+		return true;
 	}
 
 	public int getTempoMaxDevolucao(){

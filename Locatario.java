@@ -32,7 +32,4 @@ public class Locatario {
 	public boolean getSituacao(){
 		return this.Situacao;
 	}
-
-
-
 }
