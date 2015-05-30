@@ -2,34 +2,34 @@ package library;
 
 public class Locatario {
 
-	String CPF;
-	String Nome;
-	String Tipo;
-	boolean Situacao;
-	int NumeroLivrosEmprestados;
-	int TempoMaximoDevolucao; 
+	String cpf;
+	String nome;
+	String tipo;
+	boolean situacao;
+	int numeroLivrosEmprestados;
+	int tempoMaximoDevolucao; 
 
-	public void setCPF(String CPF){
-		this.CPF = CPF; 
+	public void setCPF(String cpf){
+		this.cpf = CPF; 
 	}
 
 	public String getCPF(){
-		return this.CPF;
+		return this.cpf;
 	}
 
-	public void setNome(String Nome){
-		this.Nome = Nome;
+	public void setNome(String nome){
+		this.nome = nome;
 	}
 
 	public String getNome(){
-		return this.Nome;
+		return this.nome;
 	}
 
-	public void setSituacao(boolean Situacao){
-		this.Situacao = Situacao;
+	public void setSituacao(boolean situacao){
+		this.situacao = situacao;
 	}
 
 	public boolean getSituacao(){
-		return this.Situacao;
+		return this.situacao;
 	}
 }
