@@ -7,7 +7,9 @@ public class Locatario {
 	String Tipo;
 	int Situacao;
 	int NumLivrosAlugados;
-
+	int NumMaxLivrosAlugados;
+	int TempoMaxDevolucao;
+	
 	public Locatario() {
 	}
 

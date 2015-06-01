@@ -1,9 +1,6 @@
 package library;
 
 public class Aluno extends Locatario {
-
-	int TempoMaximoDevolucao = 15;
-	int NumeroLivrosPermitidos = 4;
 	
 	public Aluno (String[] values) {
 		CPF = values[0];
@@ -11,16 +8,12 @@ public class Aluno extends Locatario {
 		Tipo = values[2];
 		Situacao = Integer.parseInt(values[3]);
 		NumLivrosAlugados=Integer.parseInt(values[4]);
-		TempoMaximoDevolucao = 15;
-		NumeroLivrosPermitidos = 4;
-	}
-	
-	public void setLivrosEmprestados(){
-
+		NumMaxLivrosAlugados = 4;
+		TempoMaxDevolucao = 15;
 	}
 
-	public int getNumeroLivrosPermitidos(){
-		return this.NumeroLivrosPermitidos;
+	public int getLivrosAlugados(){
+		return this.NumLivrosAlugados;
 
 	}
 
@@ -29,7 +22,7 @@ public class Aluno extends Locatario {
 	}
 
 	public int getTempoMaxDevolucao(){
-		return this.TempoMaximoDevolucao;
+		return this.TempoMaxDevolucao;
 	}
 
 }

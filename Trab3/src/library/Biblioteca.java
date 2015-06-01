@@ -67,17 +67,17 @@ public class Biblioteca {
 			System.out.println(df.format(DataSistema));
 		} 
 		catch (Exception ex) {  
-	        System.out.println("Data inválida!");
+	        System.out.println("Data invalida!");
 	        System.exit(0);
 	    }  
 
 		do {
 			System.out.printf("\n\t\t\tBIBLIOTECA");
-			System.out.printf("\n1-Cadastrar usuário");
+			System.out.printf("\n1-Cadastrar usuario");
 			System.out.printf("\n2-Cadastrar livro");
-			System.out.printf("\n3-Realizar empréstimo");
-			System.out.printf("\n4-Devolução");
-			System.out.printf("\n5-Consultar usuários");
+			System.out.printf("\n3-Realizar emprestimo");
+			System.out.printf("\n4-Devolucao");
+			System.out.printf("\n5-Consultar usuarios");
 			System.out.printf("\n6-Consultar livros");
 			System.out.printf("\n7-Consultar emprestimos");
 			System.out.printf("\n0-Sair\n");
@@ -99,7 +99,7 @@ public class Biblioteca {
 	}
 	//*********************************************************************************/
 	static void CadastrarUsuario() {
-		System.out.println("Digite o tipo de usuário (A/P/C): ");
+		System.out.println("Digite o tipo de usuï¿½rio (A/P/C): ");
 		aux = reader.nextLine();
 		System.out.println("Digite o CPF: ");
 		resp = reader.nextLine();
@@ -138,42 +138,46 @@ public class Biblioteca {
 	}
 	//*********************************************************************************/
 	static void CadastrarEmprestimo() {
-			System.out.printf("\nDigite o CPF do locatário: ");
+			System.out.printf("\nDigite o CPF do locatario: ");
 			aux = reader.nextLine();
 			for (Locatario l:usuarios) {
 				if (l.getCPF().equals(aux)) { //Continua o emprestimo
 					if (l.getSituacao()==0) { //Aluno esta suspenso e nao pode alugar livros
-						resp= aux;
-						System.out.println("Nome: "+l.getNome());
-						System.out.printf("\nDigite o codigo do livro: ");
-						aux = reader.nextLine();
-						for (Livros b:livros) {
-							if (b.getCodigo().equals(aux)){
-								if (b.getSituacao()==0){ //Livro nao está alugado
-									resp = resp + "," + aux;
-									System.out.println("Titulo: "+b.getNome());
-									System.out.printf("\nDigite a data de emprestimo: ");
-									aux = reader.nextLine();
-									DateFormat df = new SimpleDateFormat("dd/MM/yyyy");    
-									try {
-										Date dataaux = df.parse(aux); //Se passar do try é porque a data é valida
-										resp = resp +","+aux+",0";
-										b.setSituacao(1); //Indico que o livro está alugado
-										emprestimos.add(new Emprestimo(resp));
+						if (l.NumLivrosAlugados!=l.NumMaxLivrosAlugados) { //Se o usuario nao estÃ¡ no seu limite de livros para alugar
+							resp= aux;
+							System.out.println("Nome: "+l.getNome());
+							System.out.printf("\nDigite o codigo do livro: ");
+							aux = reader.nextLine();
+							for (Livros b:livros) {
+								if (b.getCodigo().equals(aux)){
+									if (b.getSituacao()==0){ //Livro nao estï¿½ alugado
+										resp = resp + "," + aux;
+										System.out.println("Titulo: "+b.getNome());
+										System.out.printf("\nDigite a data de emprestimo: ");
+										aux = reader.nextLine();
+										DateFormat df = new SimpleDateFormat("dd/MM/yyyy");    
+										try {
+											Date dataaux = df.parse(aux); //Se passar do try ï¿½ porque a data ï¿½ valida
+											resp = resp +","+aux+",0";
+											b.setSituacao(1); //Indico que o livro estï¿½ alugado
+											emprestimos.add(new Emprestimo(resp));
+										}
+										catch (Exception ex) {  
+									        System.out.println("Data invalida!");  
+									    }  
+										return;
 									}
-									catch (Exception ex) {  
-								        System.out.println("Data inválida!");  
-								    }  
+									System.out.println("Livro nao esta disponivel no momento");
 									return;
 								}
-								System.out.println("Livro não está disponível no momento");
-								return;
 							}
+							System.out.println("Codigo inexistente!");
+							return;
 						}
-						System.out.println("Codigo inexistente!");
+						System.out.println("Usuario jÃ¡ atingiu seu limite de livros alugados!");
 						return;
 					}
-					System.out.println("Aluno suspenso! Não pode realizar emprestimos por "+l.getSituacao()+" dias");
+					System.out.println("Aluno suspenso! Nao pode realizar emprestimos por "+l.getSituacao()+" dias");
 					return;
 				}
 			}
@@ -237,7 +241,7 @@ public class Biblioteca {
 			System.out.printf("\n2-Consultar todos do tipo T");
 			System.out.printf("\n3-Consultar todos do tipo G");
 			System.out.printf("\n4-Consultar livros alugados no momento");
-			System.out.printf("\n5-Consultar livros disponíveis");
+			System.out.printf("\n5-Consultar livros disponiveis");
 			System.out.printf("\n6-Pesquisar por codigo");
 			System.out.printf("\n0-Voltar\n");
 			resp = reader.nextLine();
@@ -288,16 +292,16 @@ public class Biblioteca {
 					.forEach(System.out::println);
 			}
 		} while (!resp.equals("0"));
-		resp="1"; //Só para entrar no menu
+		resp="1"; //Sï¿½ para entrar no menu
 	}
 	//*********************************************************************************/
 	static void ConsultaEmprestimos(Biblioteca sr) {
 		do {
 			System.out.printf("\n1-Consultar todos os registros");
-			System.out.printf("\n2-Consultar todos os livros não devolvidos");
+			System.out.printf("\n2-Consultar todos os livros nao devolvidos");
 			System.out.printf("\n3-Consultar todos os livros devolvidos");
-			System.out.printf("\n4-Pesquisar empréstimo por código do livro");
-			System.out.printf("\n5-Pesquisar empréstimo por CPF do locatário");
+			System.out.printf("\n4-Pesquisar emprï¿½stimo por codigo do livro");
+			System.out.printf("\n5-Pesquisar emprï¿½stimo por CPF do locatario");
 			System.out.printf("\n0-Voltar\n");
 			resp = reader.nextLine();
 			if (resp.equals("1")){
