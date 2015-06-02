@@ -28,19 +28,19 @@ public class Biblioteca {
 					String[] values = csv.split(",");
 					if (values[2].equals("A"))
 						usuarios.add(new Aluno(values));
-					/*if (values[2].equals("P"))
+					if (values[2].equals("P"))
 						usuarios.add(new Professor(values));
 					if (values[2].equals("C"))
 						usuarios.add(new Comunidade(values));
-					totalusuarios++;*/
+					totalusuarios++;
 				}
-				//if (file.equals("livros.csv"))
-				//	livros.add(new Livros(csv));
-				//if (file.equals("emprestimo.csv"))
-				//	emprestimos.add(new Emprestimo(csv));
+				if (file.equals("livros.csv"))
+					livros.add(new Livros(csv));
+				if (file.equals("emprestimos.csv"))
+					emprestimos.add(new Emprestimo(csv));
 				
 			} while((csv = in.readLine()) != null);
-				
+			in.close();
 		}
 		catch(FileNotFoundException e) {
 			System.out.println("Arquivo " + file + " was not found!");
@@ -64,13 +64,13 @@ public class Biblioteca {
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");    
 			DataSistema = df.parse(DataString);  
 			//System.out.println(DataSistema);
-			System.out.println(df.format(DataSistema));
+			//System.out.println(df.format(DataSistema));
 		} 
 		catch (Exception ex) {  
 	        System.out.println("Data invalida!");
 	        System.exit(0);
 	    }  
-
+		VerificaAtrasos();
 		do {
 			System.out.printf("\n\t\t\tBIBLIOTECA");
 			System.out.printf("\n1-Cadastrar usuario");
@@ -88,13 +88,19 @@ public class Biblioteca {
 				CadastrarLivro();
 			if (resp.equals("3"))
 				 CadastrarEmprestimo();
-			//if (resp.equals("4"))
+			if (resp.equals("4"))
+				CadastrarDevolucao();
 			if (resp.equals("5"))
 				ConsultaUsuarios(sr);
 			if (resp.equals("6"))
 				ConsultaLivros(sr);
-			if (resp.equals("7"))
-				ConsultaEmprestimos(sr);
+			//if (resp.equals("7"))
+			//	ConsultaEmprestimos(sr);
+			if (resp.equals("0")) {
+				GravaArquivo("usuarios.csv");
+				GravaArquivo("livros.csv");
+				GravaArquivo("emprestimos.csv");
+			}
 		} while (!resp.equals("0"));
 	}
 	//*********************************************************************************/
@@ -146,25 +152,31 @@ public class Biblioteca {
 						if (l.NumLivrosAlugados!=l.NumMaxLivrosAlugados) { //Se o usuario nao está no seu limite de livros para alugar
 							resp= aux;
 							System.out.println("Nome: "+l.getNome());
-							System.out.printf("\nDigite o codigo do livro: ");
+							System.out.printf("Digite o codigo do livro: ");
 							aux = reader.nextLine();
 							for (Livros b:livros) {
 								if (b.getCodigo().equals(aux)){
 									if (b.getSituacao()==0){ //Livro nao est� alugado
 										resp = resp + "," + aux;
 										System.out.println("Titulo: "+b.getNome());
-										System.out.printf("\nDigite a data de emprestimo: ");
-										aux = reader.nextLine();
-										DateFormat df = new SimpleDateFormat("dd/MM/yyyy");    
-										try {
-											Date dataaux = df.parse(aux); //Se passar do try � porque a data � valida
-											resp = resp +","+aux+",0";
-											b.setSituacao(1); //Indico que o livro est� alugado
-											emprestimos.add(new Emprestimo(resp));
-										}
-										catch (Exception ex) {  
-									        System.out.println("Data invalida!");  
-									    }  
+										DateFormat df = new SimpleDateFormat("dd/MM/yyyy"); 
+										aux = df.format(DataSistema);
+										resp = resp +","+aux;
+										DateFormat df2 = new SimpleDateFormat("yyyy"); 
+										DateFormat df3 = new SimpleDateFormat("MM");
+										DateFormat df4 = new SimpleDateFormat("dd");
+										GregorianCalendar auxDev = new GregorianCalendar(Integer.parseInt(df2.format(DataSistema)),
+																	  Integer.parseInt(df3.format(DataSistema)),
+																	  Integer.parseInt(df4.format(DataSistema)));
+										//Adiciono numero de dias
+										auxDev.add(Calendar.DATE, l.TempoMaxDevolucao);
+										auxDev.add(Calendar.DATE, -30);
+										Date auxDate = auxDev.getTime();
+										aux = df.format(auxDate);
+										resp = resp +","+aux;
+										b.setSituacao(1); //Indico que o livro est� alugado
+										l.NumLivrosAlugados=l.NumLivrosAlugados+1;
+										emprestimos.add(new Emprestimo(resp));
 										return;
 									}
 									System.out.println("Livro nao esta disponivel no momento");
@@ -184,6 +196,39 @@ public class Biblioteca {
 			System.out.println("CPF inexistente!");
 			return;
 		}
+	//*********************************************************************************/
+	static void CadastrarDevolucao() {
+		System.out.printf("\nDigite o CPF do locatario: ");
+		aux = reader.nextLine();
+		for (Locatario l:usuarios) {
+			if (l.getCPF().equals(aux)) { //Continua o emprestimo
+				resp= aux;
+				System.out.println("Nome: "+l.getNome());
+				System.out.printf("Digite o codigo do livro: ");
+				aux = reader.nextLine();
+				for (Livros b:livros) {
+					if (b.getCodigo().equals(aux)){
+						for (Emprestimo e:emprestimos){
+							System.out.println(" "+e.getCPF().equals(l.getCPF())+e.getCodigo().equals(b.getCodigo()));
+							if (e.getCPF().equals(l.getCPF()) && e.getCodigo().equals(b.getCodigo())){
+								l.NumLivrosAlugados=l.NumLivrosAlugados-1;
+								b.setSituacao(0); //LivroAtivo
+								//emprestimos.remove(e);
+								System.out.println("Devolucao realizada com sucesso!");
+								return;
+							}
+						}
+						System.out.println("Emprestimo inexistente!");
+						return;
+					}
+				}
+				System.out.println("Codigo inexistente!");
+				return;
+			}
+		}
+		System.out.println("Usuario inexistente!");
+		return;
+	}
 	//*********************************************************************************/
 	static void ConsultaUsuarios(Biblioteca sr) {
 		do {
@@ -343,5 +388,57 @@ public class Biblioteca {
 				.forEach(System.out::println);
 			}
 		} while (!resp.equals("0"));
+	}
+	//*********************************************************************************/
+	static void GravaArquivo(String file) {
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(file));
+			if (file.equals("usuarios.csv")) {
+				for (Locatario l:usuarios)
+					out.write(l.getCPF()+","+l.getNome()+","+l.getTipo()+","+l.getSituacao()+","+l.NumLivrosAlugados+"\n");
+			}
+			if (file.equals("livros.csv")){
+				for (Livros b:livros)
+					out.write(b.getCodigo()+","+b.getNome()+","+b.getEditora()+","+b.getTipo()+","+b.getSituacao()+"\n");
+			}
+			if (file.equals("emprestimos.csv")){
+				DateFormat df = new SimpleDateFormat("dd/MM/yyyy"); 
+				for (Emprestimo e:emprestimos) {
+						out.write(e.getCPF()+","+e.getCodigo()+","+df.format(e.getDataEmp())+","+df.format(e.getDataDev())+"\n");
+				}
+			}
+			out.close();
+		}
+		catch(FileNotFoundException e) {
+			System.out.println("Arquivo " + file + " was not found!");
+		}
+		catch(IOException e) {
+			System.out.println("Error reading the file!");
+		}
+	}
+	//*********************************************************************************/
+	static void VerificaAtrasos() {
+		for (Emprestimo e:emprestimos){
+			DateFormat df2 = new SimpleDateFormat("yyyy"); 
+			DateFormat df3 = new SimpleDateFormat("MM");
+			DateFormat df4 = new SimpleDateFormat("dd");
+			GregorianCalendar today = new GregorianCalendar(Integer.parseInt(df2.format(DataSistema)),
+					  Integer.parseInt(df3.format(DataSistema)),
+					  Integer.parseInt(df4.format(DataSistema)));
+			GregorianCalendar DataDev = new GregorianCalendar(Integer.parseInt(df2.format(e.getDataDev())),
+					  Integer.parseInt(df3.format(e.getDataDev())),
+					  Integer.parseInt(df4.format(e.getDataDev())));
+			if (today.after(DataDev)) { //Se passou da data de hoje retorna true
+				int cont=0;
+				while (today.after(DataDev)) {
+					today.add(Calendar.DATE,-1);
+					cont++;
+				}
+				for (Locatario l:usuarios){
+					if (l.getCPF().equals(e.getCPF()))
+						l.setSituacao(cont);
+				}
+			}
+		}
 	}
 }

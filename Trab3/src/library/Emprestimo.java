@@ -17,17 +17,11 @@ class Emprestimo {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");    
 		try {
 			dataEmprestimo = df.parse(values[2]); 
+			dataDevolucao = df.parse(values[3]);
 		}
 		catch (Exception ex) {  
 	        ex.printStackTrace();  
-	    }  
-		if (!values[3].equals("0")) {
-			try {
-				dataDevolucao = df.parse(values[3]);
-			}catch (Exception ex) {  
-		        ex.printStackTrace();  
-		    }  
-		}
+	    }
 	}
 	
 	void setCPF(String CPF) {
